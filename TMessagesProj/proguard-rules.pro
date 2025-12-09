@@ -34,6 +34,7 @@
 -dontwarn com.google.android.gms.**
 -dontwarn com.google.common.cache.**
 -dontwarn com.google.common.primitives.**
+-dontwarn com.google.common.util.concurrent.ListenableFuture
 -dontwarn com.googlecode.mp4parser.**
 
 -keep class com.google.android.datatransport.** { *; }
@@ -159,6 +160,7 @@
 -dontwarn org.w3c.dom.bootstrap.**
 
 -dontwarn sun.net.spi.nameservice.**
+-dontwarn sun.misc.Unsafe
 -dontwarn com.sun.jna.**
 -dontwarn javax.naming.NamingException
 -dontwarn javax.naming.directory.DirContext

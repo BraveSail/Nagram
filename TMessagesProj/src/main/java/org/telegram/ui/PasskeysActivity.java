@@ -29,6 +29,7 @@ import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor;
 import com.google.android.exoplayer2.util.Util;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -102,7 +103,7 @@ public class PasskeysActivity extends BaseFragment {
             final TL_account.Passkey passkey = passkeys.get(i);
             items.add(PasskeyCell.Factory.of(passkey, this::openMenu));
         }
-        if (passkeys.size() + 1 <= getMessagesController().config.passkeysAccountPasskeysMax.get()) {
+        if (BuildVars.SUPPORTS_PASSKEYS && passkeys.size() + 1 <= getMessagesController().config.passkeysAccountPasskeysMax.get()) {
             items.add(UItem.asButton(-1, R.drawable.menu_passkey_add, getString(R.string.PasskeyAdd)).accent());
         }
         items.add(UItem.asShadow(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(getString(R.string.PasskeyInfo), () -> {

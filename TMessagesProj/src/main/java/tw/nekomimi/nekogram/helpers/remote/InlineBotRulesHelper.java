@@ -82,10 +82,16 @@ public class InlineBotRulesHelper {
         return rules;
     }
 
-    private static void addInlineBotRule(ArrayList<InlineBotRule> rules, String username, String rule, boolean compilePattern) {
+    public static String normalizeInlineBotUsername(String username) {
+        username = username == null ? "" : username.trim();
         if (username.startsWith("@")) {
-            username = username.substring(1);
+            return username.substring(1);
         }
+        return username;
+    }
+
+    private static void addInlineBotRule(ArrayList<InlineBotRule> rules, String username, String rule, boolean compilePattern) {
+        username = normalizeInlineBotUsername(username);
         if (TextUtils.isEmpty(rule) || TextUtils.isEmpty(username)) {
             return;
         }
@@ -104,7 +110,7 @@ public class InlineBotRulesHelper {
             JSONObject object = new JSONObject();
             try {
                 object.put("pattern", rule.rule);
-                object.put("bot", rule.username.startsWith("@") ? rule.username.substring(1) : rule.username);
+                object.put("bot", normalizeInlineBotUsername(rule.username));
                 array.put(object);
             } catch (JSONException e) {
                 FileLog.e(e);

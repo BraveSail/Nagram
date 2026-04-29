@@ -3,11 +3,12 @@ import io.sentry.android.gradle.instrumentation.logcat.LogcatLevel
 
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 apply plugin: "io.sentry.android.gradle"
 apply plugin: "io.objectbox"
 
 def verName = APP_VERSION_NAME
-def verCode = 1233
+def verCode = 1235
 
 
 def officialVer = APP_VERSION_NAME
@@ -285,7 +286,6 @@ android {
 
 def fcmVersion = "23.4.1"
 def crashlyticsVersion = "18.6.2"
-def playCoreVersion = "1.10.3"
 
 dependencies {
     implementation 'androidx.fragment:fragment:1.8.9'
@@ -309,7 +309,6 @@ dependencies {
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
     implementation "com.google.firebase:firebase-messaging:$fcmVersion"
     implementation "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
-    implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
@@ -362,6 +361,12 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:5.3.2"
     implementation 'dnsjava:dnsjava:3.6.3'
 
+    // ktor
+    implementation "io.ktor:ktor-client-core:3.3.0"
+    implementation "io.ktor:ktor-client-okhttp:3.3.0"
+    implementation "io.ktor:ktor-client-content-negotiation:3.3.0"
+    implementation "io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.0"
+
     implementation "cn.hutool:hutool-core:5.8.42"
     implementation "cn.hutool:hutool-crypto:5.8.42"
     implementation 'cn.hutool:hutool-http:5.8.42'
@@ -371,7 +376,6 @@ dependencies {
 
     compileOnly fileTree("libs")
 
-    compileOnly "com.google.android.play:core:$playCoreVersion"
     // add for undo and redo
     implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:6.1'
     // add splash screen
@@ -505,7 +509,7 @@ sentry {
         // as Gradle will resolve it to the latest version.
         //
         // Defaults to the latest published Sentry version.
-        sentryVersion = '8.29.0'
+        sentryVersion = '8.37.1'
     }
 
     // Disables or enables dependencies metadata reporting for Sentry.

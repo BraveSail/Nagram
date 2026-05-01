@@ -202,12 +202,13 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         rootLayout.addView(scrollView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         ArrayList<EditTextBoldCursor[]> ruleRows = new ArrayList<>();
+        ArrayList<Button> addButtons = new ArrayList<>();
         String rules = NaConfig.INSTANCE.getFixUrlAutoInlineBotRules().String();
         for (InlineBotRulesHelper.InlineBotRule rule : InlineBotRulesHelper.parseInlineBotRules(rules, false)) {
-            addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, rule.rule, rule.username);
+            addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, addButtons, rule.rule, rule.username);
         }
         if (ruleRows.isEmpty()) {
-            addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", "");
+            addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, addButtons, "", "");
         }
 
         builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (d, v) -> {
@@ -218,9 +219,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 if (rule.isEmpty() || username.isEmpty()) {
                     continue;
                 }
-                if (username.startsWith("@")) {
-                    username = username.substring(1);
-                }
+                username = InlineBotRulesHelper.normalizeInlineBotUsername(username);
                 newRules.add(new InlineBotRulesHelper.InlineBotRule(username, rule, false));
             }
             String newValue = InlineBotRulesHelper.serializeInlineBotRules(newRules);
@@ -238,6 +237,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             Context context,
             LinearLayout rowsContainer,
             ArrayList<EditTextBoldCursor[]> ruleRows,
+            ArrayList<Button> addButtons,
             String rule,
             String username
     ) {
@@ -263,9 +263,13 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         Button addButton = new Button(context);
         addButton.setText("+");
-        addButton.setOnClickListener(v -> addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", ""));
+        addButton.setOnClickListener(v -> addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, addButtons, "", ""));
         rowLayout.addView(addButton, LayoutHelper.createLinear(48, LayoutHelper.WRAP_CONTENT));
 
+        for (Button button : addButtons) {
+            button.setVisibility(View.INVISIBLE);
+        }
+        addButtons.add(addButton);
         ruleRows.add(new EditTextBoldCursor[]{ruleEditText, usernameEditText});
         rowsContainer.addView(rowLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
     }

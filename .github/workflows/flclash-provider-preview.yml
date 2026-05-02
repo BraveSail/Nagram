@@ -40,6 +40,7 @@ jobs:
       - name: Checkout Nagram
         uses: actions/checkout@v4
         with:
+          ref: feature/custom-inline-bot-rules
           path: nagram
 
       - name: Checkout FlClash

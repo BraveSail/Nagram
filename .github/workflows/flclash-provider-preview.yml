@@ -1,0 +1,129 @@
+name: FlClash provider preview with Nagram signing
+
+on:
+  push:
+    branches:
+      - flclash-provider-preview-nagram-signing
+  workflow_dispatch:
+    inputs:
+      flclash_ref:
+        description: FlClash ref to build
+        required: false
+        default: feat/provider-yaml-preview
+      arch:
+        description: Android ABI to build
+        required: false
+        default: arm64
+        type: choice
+        options:
+          - arm64
+          - arm
+          - amd64
+          - all
+      env:
+        description: App environment
+        required: false
+        default: pre
+        type: choice
+        options:
+          - pre
+          - stable
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: FlClash Android ${{ github.event.inputs.arch || 'arm64' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Nagram
+        uses: actions/checkout@v4
+        with:
+          path: nagram
+
+      - name: Checkout FlClash
+        uses: actions/checkout@v4
+        with:
+          repository: BraveSail/FlClash
+          ref: ${{ github.event.inputs.flclash_ref || 'feat/provider-yaml-preview' }}
+          path: flclash
+          submodules: recursive
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+          cache-dependency-path: |
+            flclash/core/go.sum
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+
+      - name: Setup Nagram Android signing
+        env:
+          LOCAL_PROPERTIES_B64: ${{ secrets.LOCAL_PROPERTIES }}
+        run: |
+          set -euo pipefail
+          cd flclash
+          if [ -z "${LOCAL_PROPERTIES_B64:-}" ]; then
+            echo "::error::Nagram LOCAL_PROPERTIES secret is missing."
+            exit 1
+          fi
+
+          cp ../nagram/TMessagesProj/release.keystore android/app/keystore.jks
+          echo "$LOCAL_PROPERTIES_B64" | base64 --decode > /tmp/nagram-local.properties
+
+          trim_secret() {
+            sed -n "s/^$1=//p" /tmp/nagram-local.properties | tail -n1 | tr -d '\r\n'
+          }
+
+          KEY_ALIAS="$(trim_secret ALIAS_NAME)"
+          STORE_PASSWORD="$(trim_secret KEYSTORE_PASS)"
+          KEY_PASSWORD="$(trim_secret ALIAS_PASS)"
+
+          if [ -z "$KEY_ALIAS" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Nagram LOCAL_PROPERTIES does not contain complete signing credentials."
+            exit 1
+          fi
+
+          if ! keytool -list -keystore android/app/keystore.jks -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
+            echo "::error::Nagram LOCAL_PROPERTIES does not validate against Nagram release.keystore."
+            exit 1
+          fi
+
+          {
+            echo "keyAlias=$KEY_ALIAS"
+            echo "storePassword=$STORE_PASSWORD"
+            echo "keyPassword=$KEY_PASSWORD"
+          } >> android/local.properties
+          echo "Nagram Android signing configured."
+
+      - name: Get Flutter dependency
+        working-directory: flclash
+        run: |
+          flutter --version
+          flutter pub get
+
+      - name: Build Android artifact
+        working-directory: flclash
+        run: |
+          BUILD_ARCH="${{ github.event.inputs.arch || 'arm64' }}"
+          BUILD_ENV="${{ github.event.inputs.env || 'pre' }}"
+          if [ "$BUILD_ARCH" = "all" ]; then
+            dart setup.dart android --env "$BUILD_ENV"
+          else
+            dart setup.dart android --arch "$BUILD_ARCH" --env "$BUILD_ENV"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlClash-nagram-signed-${{ github.event.inputs.arch || 'arm64' }}-${{ github.event.inputs.flclash_ref || 'feat-provider-yaml-preview' }}-${{ github.sha }}
+          path: flclash/dist
+          if-no-files-found: error
+          overwrite: true

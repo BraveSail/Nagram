@@ -231,8 +231,9 @@
     <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">Only applies to automatic URL inline bot results. Regular inline bot media still opens the preview.</string>
     <string name="FixUrlAutoInlineBotRules">URL inline bot rules</string>
     <string name="FixUrlAutoInlineBotRulesHint">Add URL host/regex and bot username pairs</string>
-    <string name="FixUrlAutoInlineBotRulesSimpleHint">Simple mode: enter only the host, for example x.com. Subdomains are matched automatically.</string>
+    <string name="FixUrlAutoInlineBotRulesSimpleHint">Simple mode: enter host only, for example x.com. It matches that host and all subdomains; rules are checked in list order.</string>
     <string name="FixUrlAutoInlineBotRulesAdvancedHint">Advanced mode: enter a Java regular expression for the URL match.</string>
+    <string name="FixUrlAutoInlineBotRulesCannotConvertSimple">Custom regex rules cannot be converted to Simple mode. Keep Advanced mode or replace them with hosts first.</string>
     <string name="FixUrlAutoInlineBotAdvancedMode">Advanced regex mode</string>
     <string name="FixUrlAutoInlineBotAdvancedModeDesc">For custom regex rules. Keep it off if you only need to match hosts.</string>
     <string name="FixUrlAutoInlineBotRuleInvalidRegex">Rule %1$d has invalid regex: %2$s</string>

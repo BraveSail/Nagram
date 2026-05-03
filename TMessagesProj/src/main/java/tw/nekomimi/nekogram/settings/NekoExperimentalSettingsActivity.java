@@ -243,12 +243,16 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         if (ruleRows.isEmpty()) {
             addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", "", "", advancedMode[0]);
         }
-        updateFixUrlAutoInlineBotRulesDialogMode(hintTextView, ruleRows, advancedMode[0], false);
+        updateFixUrlAutoInlineBotRulesDialogMode(context, hintTextView, ruleRows, advancedMode[0], false);
 
         advancedModeCell.setOnClickListener(v -> {
-            advancedMode[0] = !advancedMode[0];
+            boolean newAdvancedMode = !advancedMode[0];
+            if (!updateFixUrlAutoInlineBotRulesDialogMode(context, hintTextView, ruleRows, newAdvancedMode, true)) {
+                advancedModeCell.setChecked(advancedMode[0]);
+                return;
+            }
+            advancedMode[0] = newAdvancedMode;
             advancedModeCell.setChecked(advancedMode[0]);
-            updateFixUrlAutoInlineBotRulesDialogMode(hintTextView, ruleRows, advancedMode[0], true);
         });
         addButton.setOnClickListener(v -> {
             addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", "", "", advancedMode[0]);
@@ -283,7 +287,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                         newRules.add(new InlineBotRulesHelper.InlineBotRule(username, ruleInput, "", false));
                     } else {
                         try {
-                            String host = InlineBotRulesHelper.normalizeHostInput(ruleInput);
+                            String host = InlineBotRulesHelper.normalizeSimpleHostInput(ruleInput);
                             String rule = InlineBotRulesHelper.buildHostPattern(host);
                             newRules.add(new InlineBotRulesHelper.InlineBotRule(username, rule, host, false));
                         } catch (IllegalArgumentException e) {
@@ -315,27 +319,44 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         return false;
     }
 
-    private void updateFixUrlAutoInlineBotRulesDialogMode(TextView hintTextView, ArrayList<FixUrlAutoInlineBotRuleRow> ruleRows, boolean advancedMode, boolean convertValues) {
-        hintTextView.setText(LocaleController.getString(advancedMode ? R.string.FixUrlAutoInlineBotRulesAdvancedHint : R.string.FixUrlAutoInlineBotRulesSimpleHint));
-        for (FixUrlAutoInlineBotRuleRow row : ruleRows) {
-            String value = row.ruleEditText.getText().toString().trim();
-            if (convertValues && !value.isEmpty()) {
-                try {
+    private boolean updateFixUrlAutoInlineBotRulesDialogMode(Context context, TextView hintTextView, ArrayList<FixUrlAutoInlineBotRuleRow> ruleRows, boolean advancedMode, boolean convertValues) {
+        ArrayList<String> convertedValues = new ArrayList<>();
+        if (convertValues) {
+            for (FixUrlAutoInlineBotRuleRow row : ruleRows) {
+                String value = row.ruleEditText.getText().toString().trim();
+                String convertedValue = value;
+                if (!value.isEmpty()) {
                     if (advancedMode) {
-                        value = InlineBotRulesHelper.buildHostPattern(value);
+                        try {
+                            convertedValue = InlineBotRulesHelper.buildHostPattern(value);
+                        } catch (RuntimeException ignored) {
+                            convertedValue = value;
+                        }
                     } else {
                         String host = InlineBotRulesHelper.extractHostFromPattern(value);
-                        if (host != null) {
-                            value = host;
+                        if (host == null) {
+                            row.ruleEditText.setError(LocaleController.getString(R.string.FixUrlAutoInlineBotRulesCannotConvertSimple));
+                            row.ruleEditText.requestFocus();
+                            Toast.makeText(context, LocaleController.getString(R.string.FixUrlAutoInlineBotRulesCannotConvertSimple), Toast.LENGTH_LONG).show();
+                            return false;
                         }
+                        convertedValue = host;
                     }
-                    row.ruleEditText.setText(value);
-                    row.ruleEditText.setSelection(row.ruleEditText.length());
-                } catch (RuntimeException ignored) {
                 }
+                convertedValues.add(convertedValue);
+            }
+        }
+        hintTextView.setText(LocaleController.getString(advancedMode ? R.string.FixUrlAutoInlineBotRulesAdvancedHint : R.string.FixUrlAutoInlineBotRulesSimpleHint));
+        for (int i = 0; i < ruleRows.size(); i++) {
+            FixUrlAutoInlineBotRuleRow row = ruleRows.get(i);
+            if (convertValues) {
+                String value = convertedValues.get(i);
+                row.ruleEditText.setText(value);
+                row.ruleEditText.setSelection(row.ruleEditText.length());
             }
             row.ruleEditText.setHint(LocaleController.getString(advancedMode ? R.string.FixUrlAutoInlineBotRulePatternHint : R.string.FixUrlAutoInlineBotRuleHostHint));
         }
+        return true;
     }
 
     private void addFixUrlAutoInlineBotRuleRow(

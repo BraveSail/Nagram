@@ -157,6 +157,17 @@ public class InlineBotRulesHelper {
         return host;
     }
 
+    public static String normalizeSimpleHostInput(String host) {
+        host = host == null ? "" : host.trim();
+        if (host.isEmpty()) {
+            return "";
+        }
+        if (host.startsWith("*.") || host.matches(".*[\\s:/?#].*")) {
+            throw new IllegalArgumentException("enter host only");
+        }
+        return normalizeHostInput(host);
+    }
+
     public static String buildHostPattern(String host) {
         host = normalizeHostInput(host);
         if (TextUtils.isEmpty(host)) {

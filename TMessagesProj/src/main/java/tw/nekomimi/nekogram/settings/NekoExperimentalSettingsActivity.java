@@ -205,7 +205,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         String rules = NaConfig.INSTANCE.getFixUrlAutoInlineBotRules().String();
         ArrayList<InlineBotRulesHelper.InlineBotRule> parsedRules = InlineBotRulesHelper.parseInlineBotRules(rules, false);
-        boolean[] advancedMode = new boolean[]{shouldUseAdvancedFixUrlAutoInlineBotRulesMode(parsedRules)};
+        boolean[] advancedMode = new boolean[]{NaConfig.INSTANCE.getFixUrlAutoInlineBotRulesAdvancedMode().Bool() || shouldUseAdvancedFixUrlAutoInlineBotRulesMode(parsedRules)};
 
         TextCheckCell advancedModeCell = new TextCheckCell(context, 24, true);
         advancedModeCell.setTextAndCheck(
@@ -296,9 +296,11 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 }
                 String newValue = InlineBotRulesHelper.serializeInlineBotRules(newRules);
                 NaConfig.INSTANCE.getFixUrlAutoInlineBotRules().setConfigString(newValue);
+                NaConfig.INSTANCE.getFixUrlAutoInlineBotRulesAdvancedMode().setConfigBool(advancedMode[0]);
                 cellGroup.listAdapter.notifyItemChanged(cellGroup.rows.indexOf(fixUrlAutoInlineBotRulesRow));
                 cellGroup.thisFragment.getParentLayout().rebuildAllFragmentViews(false, false);
                 cellGroup.runCallback(NaConfig.INSTANCE.getFixUrlAutoInlineBotRules().getKey(), newValue);
+                cellGroup.runCallback(NaConfig.INSTANCE.getFixUrlAutoInlineBotRulesAdvancedMode().getKey(), advancedMode[0]);
                 dialog.dismiss();
             });
         }

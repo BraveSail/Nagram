@@ -994,6 +994,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             DEFAULT_FIX_URL_AUTO_INLINE_BOT_RULES
         )
+    val fixUrlAutoInlineBotRulesAdvancedMode =
+        addConfig(
+            "FixUrlAutoInlineBotRulesAdvancedMode",
+            ConfigItem.configTypeBool,
+            false
+        )
     val deepLxCustomApi =
         addConfig(
             "DeepLxCustomApi",

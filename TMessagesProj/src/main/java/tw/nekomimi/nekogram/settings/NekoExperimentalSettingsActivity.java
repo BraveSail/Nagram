@@ -208,19 +208,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         boolean[] advancedMode = new boolean[]{shouldUseAdvancedFixUrlAutoInlineBotRulesMode(parsedRules)};
 
         TextCheckCell advancedModeCell = new TextCheckCell(context, 24, true);
-        advancedModeCell.setTextAndValueAndCheck(
+        advancedModeCell.setTextAndCheck(
                 LocaleController.getString(R.string.FixUrlAutoInlineBotAdvancedMode),
-                LocaleController.getString(R.string.FixUrlAutoInlineBotAdvancedModeDesc),
                 advancedMode[0],
-                true,
                 false
         );
         advancedModeCell.setBackground(Theme.createRoundRectDrawable(AndroidUtilities.dp(10), Theme.getColor(Theme.key_dialogBackgroundGray)));
         rootLayout.addView(advancedModeCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 24, 0, 24, 8));
 
+        android.widget.ScrollView scrollView = new android.widget.ScrollView(context);
+        scrollView.setFillViewport(false);
         LinearLayout rowsContainer = new LinearLayout(context);
         rowsContainer.setOrientation(LinearLayout.VERTICAL);
-        rootLayout.addView(rowsContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 8));
+        scrollView.addView(rowsContainer, LayoutHelper.createScroll(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP));
+        rootLayout.addView(scrollView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 300, 0, 0, 0, 8));
 
         TextView addButton = new TextView(context);
         addButton.setText(LocaleController.getString(R.string.Add));
@@ -249,7 +250,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             advancedModeCell.setChecked(advancedMode[0]);
             updateFixUrlAutoInlineBotRulesDialogMode(hintTextView, ruleRows, advancedMode[0], true);
         });
-        addButton.setOnClickListener(v -> addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", "", "", advancedMode[0]));
+        addButton.setOnClickListener(v -> {
+            addFixUrlAutoInlineBotRuleRow(context, rowsContainer, ruleRows, "", "", "", advancedMode[0]);
+            scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+        });
 
         builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
         builder.setView(rootLayout);
@@ -354,20 +358,21 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         EditTextBoldCursor ruleEditText = new EditTextBoldCursor(context);
         setupFixUrlAutoInlineBotRuleEditText(ruleEditText, LocaleController.getString(advancedMode ? R.string.FixUrlAutoInlineBotRulePatternHint : R.string.FixUrlAutoInlineBotRuleHostHint));
         ruleEditText.setText(advancedMode ? rule : InlineBotRulesHelper.getHostForRule(rule, host));
-        topRow.addView(ruleEditText, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f));
+        topRow.addView(ruleEditText, LayoutHelper.createLinear(0, 48, 1f));
 
         TextView deleteButton = new TextView(context);
         deleteButton.setText("×");
-        deleteButton.setTextSize(24);
+        deleteButton.setTextSize(22);
         deleteButton.setGravity(Gravity.CENTER);
+        deleteButton.setIncludeFontPadding(false);
         deleteButton.setTextColor(Theme.getColor(Theme.key_text_RedRegular));
         deleteButton.setBackground(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(18), Theme.getColor(Theme.key_text_RedRegular)));
-        topRow.addView(deleteButton, LayoutHelper.createLinear(42, 42, 10, 0, 0, 0));
+        topRow.addView(deleteButton, LayoutHelper.createLinear(42, 42, 10, 3, 0, 3));
 
         EditTextBoldCursor usernameEditText = new EditTextBoldCursor(context);
         setupFixUrlAutoInlineBotRuleEditText(usernameEditText, LocaleController.getString(R.string.FixUrlAutoInlineBotUsernameHint));
         usernameEditText.setText(username);
-        cardLayout.addView(usernameEditText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
+        cardLayout.addView(usernameEditText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 0, 6, 0, 0));
 
         FixUrlAutoInlineBotRuleRow row = new FixUrlAutoInlineBotRuleRow(ruleEditText, usernameEditText);
         deleteButton.setOnClickListener(v -> {
@@ -384,6 +389,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         editText.setHint(hint);
         editText.setTextSize(16);
+        editText.setGravity(Gravity.CENTER_VERTICAL | (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT));
+        editText.setMinHeight(AndroidUtilities.dp(48));
         editText.setHintTextColor(Theme.getColor(Theme.key_dialogTextHint));
         editText.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
         editText.setCursorColor(Theme.getColor(Theme.key_dialogTextBlack));

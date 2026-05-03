@@ -230,8 +230,14 @@
     <string name="FixUrlAutoInlineBotSkipMediaPreview">Send URL inline bot media instantly</string>
     <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">Skip media preview only for automatic URL inline bot results</string>
     <string name="FixUrlAutoInlineBotRules">URL inline bot rules</string>
-    <string name="FixUrlAutoInlineBotRulesHint">Add URL regex and bot username pairs</string>
+    <string name="FixUrlAutoInlineBotRulesHint">Add URL host/regex and bot username pairs</string>
+    <string name="FixUrlAutoInlineBotRulesSimpleHint">Simple mode: enter only the host, for example x.com. Subdomains are matched automatically.</string>
+    <string name="FixUrlAutoInlineBotRulesAdvancedHint">Advanced mode: enter a Java regular expression for the URL match.</string>
+    <string name="FixUrlAutoInlineBotAdvancedMode">Advanced regex mode</string>
+    <string name="FixUrlAutoInlineBotAdvancedModeDesc">For custom regex rules. Keep it off if you only need to match hosts.</string>
     <string name="FixUrlAutoInlineBotRuleInvalidRegex">Rule %1$d has invalid regex: %2$s</string>
+    <string name="FixUrlAutoInlineBotRuleInvalidHost">Rule %1$d has invalid host: %2$s</string>
+    <string name="FixUrlAutoInlineBotRuleHostHint">Host, e.g. x.com</string>
     <string name="FixUrlAutoInlineBotRulePatternHint">URL regex</string>
     <string name="FixUrlAutoInlineBotUsernameHint">bot_username</string>
     <string name="ProviderDeepLxTranslate">DeepLx Translate</string>

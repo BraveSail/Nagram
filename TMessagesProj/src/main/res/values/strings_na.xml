@@ -227,8 +227,8 @@
     <string name="ChatActivityNavbarTransparent">Chat navbar fully transparent</string>
     <string name="FixUrlPagePreview">Fix URL link preview</string>
     <string name="FixUrlAutoInlineBot">Auto use URL querying inline bot</string>
-    <string name="FixUrlAutoInlineBotSkipMediaPreview">Send URL inline bot media instantly</string>
-    <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">Skip media preview only for automatic URL inline bot results</string>
+    <string name="FixUrlAutoInlineBotSkipMediaPreview">Send media results directly</string>
+    <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">Only applies to automatic URL inline bot results. Regular inline bot media still opens the preview.</string>
     <string name="FixUrlAutoInlineBotRules">URL inline bot rules</string>
     <string name="FixUrlAutoInlineBotRulesHint">Add URL host/regex and bot username pairs</string>
     <string name="FixUrlAutoInlineBotRulesSimpleHint">Simple mode: enter only the host, for example x.com. Subdomains are matched automatically.</string>

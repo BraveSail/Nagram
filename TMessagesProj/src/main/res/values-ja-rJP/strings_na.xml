@@ -226,8 +226,8 @@
     <string name="ChatActivityNavbarTransparent">チャットナビゲーションバーは完全に透明です</string>
     <string name="FixUrlPagePreview">URL リンクのプレビューを修正</string>
     <string name="FixUrlAutoInlineBot">インラインボットのURLクエリを自動的に使用する</string>
-    <string name="FixUrlAutoInlineBotSkipMediaPreview">URL インラインボットのメディア結果を直接送信</string>
-    <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">自動 URL インラインボット結果でのみメディアプレビューをスキップします</string>
+    <string name="FixUrlAutoInlineBotSkipMediaPreview">メディア結果を直接送信</string>
+    <string name="FixUrlAutoInlineBotSkipMediaPreviewDesc">自動 URL インラインボット結果にのみ適用されます。通常のインラインボットのメディアは引き続きプレビューを開きます。</string>
     <string name="FixUrlAutoInlineBotRules">URL インラインボットルール</string>
     <string name="FixUrlAutoInlineBotRulesHint">URL ホスト/正規表現とボットユーザー名のペアを追加</string>
     <string name="FixUrlAutoInlineBotRulesSimpleHint">シンプルモード: x.com のようにホストだけを入力します。サブドメインは自動で一致します。</string>

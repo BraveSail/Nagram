@@ -28,6 +28,8 @@ object NaConfig {
         false
     private val configs =
         ArrayList<ConfigItem>()
+    private const val DEFAULT_FIX_URL_AUTO_INLINE_BOT_RULES =
+        """[{"host":"x.com","pattern":"(^|[\\s(\\[{<])(?:https?://)?([\\w-]+\\.)*x\\.com(?=[:/?#\\s)\\]}>]|$)","bot":"twpicbot"},{"host":"threads.com","pattern":"(^|[\\s(\\[{<])(?:https?://)?([\\w-]+\\.)*threads\\.com(?=[:/?#\\s)\\]}>]|$)","bot":"lizardman_bot"},{"host":"threads.net","pattern":"(^|[\\s(\\[{<])(?:https?://)?([\\w-]+\\.)*threads\\.net(?=[:/?#\\s)\\]}>]|$)","bot":"lizardman_bot"},{"host":"pixiv.net","pattern":"(^|[\\s(\\[{<])(?:https?://)?([\\w-]+\\.)*pixiv\\.net(?=[:/?#\\s)\\]}>]|$)","bot":"pixiv_bot"},{"host":"twitter.com","pattern":"(^|[\\s(\\[{<])(?:https?://)?([\\w-]+\\.)*twitter\\.com(?=[:/?#\\s)\\]}>]|$)","bot":"twpicbot"}]"""
 
     // Configs
     val forceCopy =
@@ -980,6 +982,24 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val fixUrlAutoInlineBotSkipMediaPreview =
+        addConfig(
+            "FixUrlAutoInlineBotSkipMediaPreview",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val fixUrlAutoInlineBotRules =
+        addConfig(
+            "FixUrlAutoInlineBotRules",
+            ConfigItem.configTypeString,
+            DEFAULT_FIX_URL_AUTO_INLINE_BOT_RULES
+        )
+    val fixUrlAutoInlineBotRulesAdvancedMode =
+        addConfig(
+            "FixUrlAutoInlineBotRulesAdvancedMode",
+            ConfigItem.configTypeBool,
+            false
+        )
     val deepLxCustomApi =
         addConfig(
             "DeepLxCustomApi",
@@ -1008,7 +1028,13 @@ object NaConfig {
         addConfig(
             "LLMProvider",
             ConfigItem.configTypeInt,
-            0 // 0: OpenAI, 1: Gemini, 2: Groq, 3: DeepSeek, 4: xAI, 5: ZhipuAI
+            0
+        )
+    val llmApiFormat =
+        addConfig(
+            "LLMApiFormat",
+            ConfigItem.configTypeInt,
+            0
         )
     val llmApiKeys =
         addConfig(
@@ -1026,13 +1052,13 @@ object NaConfig {
         addConfig(
             "LLMOpenAIModel",
             ConfigItem.configTypeString,
-            "gpt-4o-mini"
+            "gpt-4.1-mini"
         )
     val llmGeminiModel =
         addConfig(
             "LLMGeminiModel",
             ConfigItem.configTypeString,
-            "gemini-2.0-flash-exp"
+            "gemini-2.5-flash"
         )
     val llmGroqModel =
         addConfig(
@@ -1050,7 +1076,7 @@ object NaConfig {
         addConfig(
             "LLMXAIModel",
             ConfigItem.configTypeString,
-            "grok-2-latest"
+            "grok-3-mini-fast"
         )
     val llmZhipuAIModel =
         addConfig(
@@ -1058,17 +1084,53 @@ object NaConfig {
             ConfigItem.configTypeString,
             "GLM-4-Flash"
         )
+    val llmMistralModel =
+        addConfig(
+            "LLMMistralModel",
+            ConfigItem.configTypeString,
+            "mistral-small-latest"
+        )
+    val llmOpenRouterModel =
+        addConfig(
+            "LLMOpenRouterModel",
+            ConfigItem.configTypeString,
+            "meta-llama/llama-3.3-70b-instruct"
+        )
+    val llmQwenModel =
+        addConfig(
+            "LLMQwenModel",
+            ConfigItem.configTypeString,
+            "qwen-turbo-latest"
+        )
+    val llmMoonshotModel =
+        addConfig(
+            "LLMMoonshotModel",
+            ConfigItem.configTypeString,
+            "moonshot-v1-8k"
+        )
+    val llmSiliconFlowModel =
+        addConfig(
+            "LLMSiliconFlowModel",
+            ConfigItem.configTypeString,
+            "Qwen/Qwen2.5-7B-Instruct"
+        )
+    val llmCustomModel =
+        addConfig(
+            "LLMCustomModel",
+            ConfigItem.configTypeString,
+            ""
+        )
     val llmSystemPrompt =
         addConfig(
             "LLMSystemPrompt",
             ConfigItem.configTypeString,
-            "You are a professional translation engine. Translate the text to {target_language}, keep the format."
+            ""
         )
     val llmTemperature =
         addConfig(
             "LLMTemperature",
             ConfigItem.configTypeString,
-            "0.3"
+            "0.7"
         )
     val mainTabsStyle =
         addConfig(
@@ -1142,6 +1204,24 @@ object NaConfig {
             customDialogsMenu,
             6,
             false
+        )
+    val sidebarSettingsActivity =
+        addConfig(
+            "SidebarSettingsActivity",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val compactMessageMenuOptions =
+        addConfig(
+            "CompactMessageMenuOptions",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val hiddenMessageMenuOptions =
+        addConfig(
+            "HiddenMessageMenuOptions",
+            ConfigItem.configTypeString,
+            ""
         )
 
     private fun addConfig(
